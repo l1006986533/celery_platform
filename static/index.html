@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <script src="https://unpkg.com/vue@3"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <script src="https://unpkg.com/element-plus"></script>
+    <script src="https://unpkg.com/@element-plus/icons-vue"></script>
+    <title>视频处理系统</title>
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import { loadModule } from 'https://unpkg.com/vue3-sfc-loader/dist/vue3-sfc-loader.esm.js';
+
+      const options = {
+        moduleCache: {
+          vue: Vue
+        },
+        getFile(url) {
+          return fetch(url).then(response => {
+            if (!response.ok) {
+              throw new Error(`无法加载 ${url}`);
+            }
+            return response.text();
+          });
+        },
+        addStyle(styleStr) {
+          const style = document.createElement('style');
+          style.textContent = styleStr;
+          document.head.appendChild(style);
+        }
+      };
+
+      loadModule('/static/App.vue', options)
+        .then(App => {
+          const app = Vue.createApp(App);
+          app.use(ElementPlus);
+          Object.entries(ElementPlusIconsVue).forEach(([name, component]) => {
+            app.component(name, component);
+          });
+          app.mount('#app');
+        })
+        .catch(error => {
+          console.error('加载 Vue 组件失败:', error);
+        });
+    </script>
+  </body>
+</html>
